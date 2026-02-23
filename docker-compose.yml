@@ -2,6 +2,7 @@ services:
   nodebb:
     image: ghcr.io/nodebb/nodebb:latest
     restart: unless-stopped
+    user: "0:0"
     ports:
       - "4567:4567"
     environment:
@@ -15,7 +16,9 @@ services:
       NODEBB_REDIS_HOST: redis
       NODEBB_REDIS_PORT: 6379
     volumes:
-      - nodebb-data:/usr/src/app
+      - nodebb-build:/usr/src/app/build
+      - nodebb-uploads:/usr/src/app/public/uploads
+      - nodebb-config:/opt/config
     depends_on:
       - postgres
       - redis
@@ -35,5 +38,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  nodebb-data:
+  nodebb-build:
+  nodebb-uploads:
+  nodebb-config:
   postgres-data:
