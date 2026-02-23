@@ -1,15 +1,12 @@
 services:
   nodebb:
-    build: .
-    image: nodebb-local
-    command: ["./nodebb", "start"]
+    image: nodebb/docker:latest
     restart: unless-stopped
     ports:
       - "4567:4567"
     volumes:
-      - nodebb-build:/usr/src/app/build
       - nodebb-uploads:/usr/src/app/public/uploads
-      - nodebb-config:/opt/config
+      - nodebb-config:/usr/src/app/config
     depends_on:
       - postgres
       - redis
@@ -25,44 +22,10 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   redis:
-    image: redis:8.4.0-alpine
+    image: redis:alpine
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes", "--loglevel", "warning"]
-    volumes:
-      - redis-data:/data
 
 volumes:
   postgres-data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/database/postgresql/data
-
-  redis-data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/database/redis
-
-  nodebb-build:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/build
-
   nodebb-uploads:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/public/uploads
-
   nodebb-config:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./.docker/config
